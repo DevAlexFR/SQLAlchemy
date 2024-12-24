@@ -12,6 +12,10 @@ from sqlalchemy.orm import Session
 
 
 class PG_ALCHEMY:
+    """
+        Classe de controle do postgres com sqlalchemy e polars
+    """
+
     def __init__(self, local=False):
         """
         Inicializa a conexão com o banco de dados, localmente ou em produção.
@@ -40,6 +44,8 @@ class PG_ALCHEMY:
         # Cria as tabelas no banco de dados se elas não existirem.
         self.__create_tables()
 
+
+    ### / DECORADORES \  ###
     @staticmethod # (método estático) -> Isso significa que ele não depende de uma instância específica da classe para ser chamado.
     def read_operation(func):
         """
@@ -94,6 +100,7 @@ class PG_ALCHEMY:
         return wrapper
 
 
+    ### / FUNÇÕES INTERNAS \  ###
     def __create_tables(self):
         """
         Cria as tabelas do core, caso não existam no banco de dados.
@@ -101,6 +108,7 @@ class PG_ALCHEMY:
         table_registry.metadata.create_all(self.engine)
 
 
+    ### / FUNÇÕES DE CONTROLE \  ###
     def get_session(self) -> Session:
         """
         Inicia uma sessão com a engine do banco de dados.
@@ -111,6 +119,8 @@ class PG_ALCHEMY:
         session = Session(self.engine)
         return session
 
+
+    ### / FUNÇÕES DE LEITURA \  ###
     @timeit
     @read_operation
     def read_database(self, tb_name: str, query: str = None, session: Session = None) -> pl.DataFrame:
@@ -132,10 +142,13 @@ class PG_ALCHEMY:
         return df
 
 
+    ### / FUNÇÕES DE MANIPULAÇÃO \  ###
     @commit_operation
     def add_user(self, session: Session, username: str, password: str, email: str):
         new_user = User(username=username, password=password, email=email)
         session.add(new_user)
+
+
 
 if __name__ == "__main__":
     db = PG_ALCHEMY(local=True)
