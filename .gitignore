@@ -3,8 +3,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# path
+SU_PASSWORD
+notes
+
 # C extensions
 *.so
+*.toml
 
 # Distribution / packaging
 .Python
